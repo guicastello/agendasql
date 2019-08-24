@@ -67,6 +67,7 @@ if [ -ne $LOGFILE ]
 		2LOG "Creación de Log file."
 fi
 2LOG "Inicio Log agendasql por el usuario "$(whoami)
+mysql -e "use agenda;"
 while [ $opcion != "9" ]; do
  menu
  read opcion
@@ -79,8 +80,9 @@ while [ $opcion != "9" ]; do
 	   echo -ne "hora fin: "; read hfin;
 	   echo -ne "todo el dia: "; read tld;
 	   echo -ne "Descripcion: "; read desc;
-	   mysql agenda -e "insert into agenda.calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('$fecha', '$hini', '$hfin', '$tld', '$desc');";
-           2LOG "Alta de registro.";;
+	   mysql agenda -e "insert into agenda.calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('${fecha}', '${hini}', '${hfin}', '${tld}', '${desc}');";
+       pausa;
+       2LOG "Alta de registro.";;
 
 	2) mcur;
 	   echo -e "Borrar registro por fecha";
@@ -122,7 +124,7 @@ while [ $opcion != "9" ]; do
 
 	7) mcur;
 	   echo -e "Backup agendasql";
-	   mysqldump agenda > backups\agenda_`date +%Y-%m-%d_%H%M`.sql;
+	   mysqldump agenda > ~/agendasql/backups/agenda_`date +%Y-%m-%d_%H%M`.sql;
 	   echo -e $bold"Backup OK"$rset;
 	   pausa;
 	   2LOG "Back up agenda";;
