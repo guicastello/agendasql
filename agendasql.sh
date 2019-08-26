@@ -8,8 +8,8 @@ rvrs="\033[7m"					# Invierte el texto
 ylow="\033[33m"					# Letras en Amarillo
 fdoa="\033[44m"					# Letras en Blancas con fondo azul.
 subr="\033[4m"					# Letras subrayadas
-hoy="$(date +%d/%m/%Y)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
-efe="$(date +%d/%m)"			# fecha dia/mes para efemerides
+hoy="$(date +%Y-%m-%d)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
+efe="$(date +%m-%d)"			# fecha dia/mes para efemerides
 VERSION="V1.0"					# Version
 LOG="agendasql-"$VERSION".log"	# Nombre del log 
 
@@ -30,7 +30,7 @@ LOG="agendasql-"$VERSION".log"	# Nombre del log
 	}
 ### Funcion Escribe Log ###
 	function 2LOG() {
-		echo $(date +%Y/%m/%d-%H:%M)": "$1 >> $LOG
+		echo $(date +%Y-%m-%d_%H:%M)": "$1 >> $LOG
 }
 
 
@@ -74,7 +74,7 @@ while [ $opcion != "9" ]; do
  case $opcion in
 
 	1) mcur;
-	   echo -e "Alta registro";
+	   echo -e "> Alta registro";
 	   echo -ne "fecha: ";read fecha;
 	   echo -ne "hora inicio: "; read hini;
 	   echo -ne "hora fin: "; read hfin;
@@ -85,7 +85,7 @@ while [ $opcion != "9" ]; do
        2LOG "Alta de registro.";;
 
 	2) mcur;
-	   echo -e "Borrar registro por fecha";
+	   echo -e " > Borrar registro por fecha";
 	   echo -ne "Fecha: ";read fecha;
 	   mysql agenda -e "select * from calendario where fecha like '%"${fecha}"%';";
            echo -ne "Ingrese Id a Borrar: "; read id;
@@ -95,7 +95,7 @@ while [ $opcion != "9" ]; do
 	   2LOG "Borrado fecha "$fecha;;
 
 	3) mcur;
-	   echo -e "Borrar registro por descripcion";
+	   echo -e " > Borrar registro por descripcion";
 	   echo -ne "Descripcion: ";read descripcion;
 	   mysql agenda -e "SELECT * FROM calendario WHERE description LIKE '%"${descripcion}"%';";
 	   echo -e "Ingrese Id a Borrar> "; read id;
@@ -104,26 +104,26 @@ while [ $opcion != "9" ]; do
 	   2LOG "Borrado descripcion"$CALENDAR;;
 
 	4) mcur;
-	   echo -e "Busqueda por fecha";
+	   echo -e " > Busqueda por fecha";
 	   echo -ne "fecha: ";read fecha;
 	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%';";
 	   pausa;
 	   2LOG "Busqueda Fecha "$fecha;;
 
 	5) mcur;
-	   echo "Agenda para el  dia de hoy";
+	   echo " > Agenda para el  dia de hoy";
            mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${hoy}"%';";
            pausa;
            2LOG "Agenda de Hoy";;
 
 	6) mcur;
-	   echo -e "Efemerides";
+	   echo -e " > Efemerides";
 	   mysql agenda -e "SELECT * FROM calendario WHERE (fecha LIKE '%"${efe}"%' AND todo_dia = TRUE);";
 	   pausa;
 	   2LOG "Efemerides";;
 
 	7) mcur;
-	   echo -e "Backup agendasql";
+	   echo -e " > Backup agendasql";
 	   mysqldump agenda > ~/agendasql/backups/agenda_`date +%Y-%m-%d_%H%M`.sql;
 	   echo -e $bold"Backup OK"$rset;
 	   pausa;
@@ -132,9 +132,9 @@ while [ $opcion != "9" ]; do
 	8) mcur;
 	   echo -ne "fecha: ";read fecha;
 	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%';";
-	   echo -e "Elija registro a modificar";
+	   echo -e " > Elija registro a modificar";
 	   echo -ne "id: "; read id;
-	   echo -e "Elija campo a modificar:\n";
+	   echo -e " > Elija campo a modificar:\n";
 	   echo -e $rvrs"1"$rset" fecha "$rvrs"2"$rset" hora inicio "$rvrs"3"$rset" hora fin "$rvrs"4"$rset" todo el dia "$rvrs"5"$rset" descripcion "$rvrs"6"$rset" Cancelar\n";
 	   echo -ne "opcion: ";read opcion;
 	   case $opcion in
