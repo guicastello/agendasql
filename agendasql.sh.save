@@ -1,0 +1,307 @@
+#! /bin/bash
+### Definicion de Variables ###
+opcion=0					# se usa para elegir qué tarea se va a realizar
+bold="\033[1m"					# Pone los atributos del texto en "Bold".
+rset="\033[0m"					# Desactiva los Atributos del texto.
+rvrs="\033[7m"					# Invierte el texto
+ylow="\033[33m"					# Letras en Amarillo
+fdoa="\033[44m"					# Letras en Blancas con fondo azul.
+subr="\033[4m"					# Letras subrayadas
+hoy="$(date +%Y/%m/%d)"				# obtengo la fecha del día de hoy (YYYY/MM/DD)
+# CALENDAR=guille.pcal				# Defino el calendario predeterminado
+VERSION="V1.0"
+LOG="agenda-"$VERSION".log"
+#
+# Definición de funciones
+#
+	function valido() {
+		RETURN=$?
+		OP=$1
+	   	if [ $RETURN = 0 ] 
+			then echo -e "\n"$fdoa$OP" OK."$rset
+	        	else echo -e "\n"$ylow$OP" KO."$rset
+	   	fi	
+	}
+
+#
+# Función mcur posiciona el cursor fuera del menu para manener prolijo el loop
+#
+	function mcur(){
+		echo -e "\033[12;5H";
+	}
+
+#
+# Función Ordena, ordena por fecha los registros del archivo
+#
+#	function ordena() {
+#		cat $CALENDAR | sort -n > $CALENDAR.new;
+#		rm $CALENDAR;
+#		mv $CALENDAR.new $CALENDAR;
+	}
+
+### Función Pausa, detiene la ejecución del script hasta presionar [ENTER] ###
+	function pausa(){
+		echo -en $bold"Presione una tecla"$rset;
+		read pausa;
+	}
+### Funcion Escribe Log ###
+	function 2LOG() {
+		echo $(date +%Y/%m/%d-%H:%M)": "$1 >> $LOG
+}
+
+
+### Función menú muestra el menú ###
+	function menu() {
+		clear
+		echo -e "================================================================================="
+		echo -e "\t\t"$subr$bold$ylow"Bitácora SQL"$rset" - "$VERSION"
+#, usando el calendario: "$rset$ylow$CALENDAR$rset;
+		echo -e "================================================================================="
+		cal
+		echo -ne "\033[4;21H | "
+		echo -e " 1) Alta\t\t4) Busqueda por Fecha\t7) Backup"
+		echo -ne "\033[5;21H | "
+		echo -e " 2) Borrar fecha\t5) Ver Agenda para Hoy\t8) Restore"
+		echo -ne "\033[6;21H | "
+		echo -e " 3) Modificación\t6) Enviar por email\t9) Salir"
+		echo -ne "\033[7;21H | " 
+		echo -e " s) Sincronizar"
+		echo -ne "\033[8;21H | "
+		echo -ne "\033[9;21H |  opción: "
+		echo -ne "\033[s" # grabo posision del cursor
+		echo -ne "\033[10;21H | ";
+		echo -ne "\033[11;1H================================================================================="
+		echo -ne "\033[u" # restauro posicion del cursor
+	}
+
+#### Bucle Principal ####
+#if [[ $1 = "" ]]												# Si no hay parametro pasado desde la linea 
+#		then echo "Abriendo calendario predeterminado"			# de comandos carga el calendario predeterminado
+#		else
+#			CALENDAR=$1
+#			echo "Abriendo calendario "$1						# Sino, toma el nombre del parametro como nombre del
+#fi																# Calendario que pasé como Calenario desde la línea de comandos.
+#pausa
+#if [ -w $CALENDAR ]												# Verifica que $CALENDAR existe
+#	then														# y tiene permsos de escritura 
+#		echo "Existe el archivo "$CALENDAR > /dev/null; 		# para el usuario actual
+#	else														# Sino, lo crea con un encabezado.
+#		echo "Creando el archivo "$CALENDAR;					# Los comandos echo son desviadoas a /dev/null
+#		touch $CALENDAR;										# pues no se necesita informarle al user si crea o 
+#		chmod u+w $CALENDAR;
+#		echo "# "$CALENDAR" created with agenda "$VERSION"\n" >> $CALENDAR;
+#		pausa;
+#fi
+#
+
+if [ -ne $LOGFILE ]
+       then
+		echo > /dev/null
+       else
+		touch agendasql.log
+		chmod u+w agendasql.log
+		2LOG "Creación de Log file."
+fi
+2LOG "Inicio sesión en calendario "$CALENDAR" por usuario "$(whoami)
+while [ $opcion != "9" ]; do
+ menu
+ read opcion
+ case $opcion in
+	
+	1) mcur;
+		
+
+	   echo -ne $subr$bold"Fecha"$rset" ["$hoy"]:";			# Opcion Alta para el día de hoy
+	   read fecha;
+	   if [[ $fecha = "" ]]
+		then
+			fecha=$hoy;
+			#echo "fecha tomada del sistema: "$fecha
+	   fi;
+	   echo -ne "Fecha: "$fecha"\n"$rset;
+	   echo -ne $bold"¿Es un evento de todo el dia?"$rset" (X = Sí): ";
+	   read teld;
+	   if [[ $teld = "X" ]]
+		then
+			echo -ne $subr$bold"Descripción:"$rset" ";
+	   		read desc;										# leo descripción
+	   		echo ${fecha}"::-::-::"${desc}"::" >> ${CALENDAR} 2&1> /dev/null;	# Agrego al final del archivo Guille.cal
+															# Los campos 0000 son las horas de inicio y fin en cero
+	   		${fecha}="";										# Borro la variable $fecha para dejarla lista para multiples altas consecutivas
+	   		ordena;											# ordeno por fecha $CALENDAR
+
+		else
+			echo -ne $subr$bold"Hora inicio"$rset" (0000): ";	# Ingresa Hora de inicio
+			read hini;
+			if [[ $hini = "" ]]
+				then
+					hini=$(date +%Hh%Mm);
+			fi; 
+			echo -ne $subr$bold"Hora fin"$rset" (0000): ";
+			read hfin;
+			echo -ne $subr$bold"Descripción:"$rset" ";
+	   		read desc;													# leo descripción
+	   		echo ${fecha}"::"${hini}"::"${hfin}"::"${desc}"::\n" >> $CALENDAR 2&1> /dev/null;	# Agrego al final del archivo Guille.cal
+																		# Los campos 0000 son las horas de inicio y fin en cero
+	   		${fecha}=" ";													# Borro la variable $fecha para dejarla lista para multiples altas consecutivas
+	   		ordena;														# ordeno por fecha $CALENDAR
+	   fi;
+           2LOG "Alta de registro.";; 	
+	
+	2) mcur; #echo -e "\033[7;1H";
+	   echo -ne $subr$bold"Fecha a Borrar \(YYYYMMDD\):"$rset" ";
+           read fecha;
+           sed "/"$fecha"/d" $CALENDAR > $CALENDAR.new;				# Busco la fecha en el archivo calendario y lo grabo
+	   rm $CALENDAR;												# en el nuevo, después borro el viejo
+           mv $CALENDAR.new $CALENDAR								# renombro el nuevo como el viejo
+	   2LOG "Borrado fecha "$fecha;;
+
+	3) vi $CALENDAR;												# uso el vi como se usa en el visudo
+	   ordena;
+	   valido modificación;
+	   pausa;
+	   2LOG "Modificación del archivo "$CALENDAR;;	
+
+	4) mcur;														# función de busqueda para una fecha dada
+	   echo -ne $subr$bold"Fecha a Buscar (YYYY/MM/DD):"$rset" ";
+	   OUTPUT="";
+	   read fecha;
+	   if [[ $fecha = "" ]]
+		then
+			fecha=$hoy;
+			#echo "fecha tomada del sistema: "$fecha
+	   fi;
+	   echo -e $ylow$bold"Agenda para el día "$fecha$rset;
+	   OUTPUT=$(cat ${CALENDAR}|grep -i ${fecha}|cut -c 13-)			# lista el archivo calendario busca la fecha del día.
+	   export OUTPUT;													# Busco por fecha y la corto.
+	   if [[ $OUTPUT = "" ]]											# Validacion en caso de que la salida dé vacía.
+		then
+			echo -e "No hay eventos registrados para el "$fecha" .";
+	   
+	   else
+			IFS="::";													# Defino el separador de registros.
+	   		set $OUTPUT;												# Separo los registros. 
+	   		echo $OUTPUT;												# Imprimo en pantalla.
+		
+	   fi;
+	   pausa;
+	   unset $IFS
+	   2LOG "Busqueda Fecha "$fecha;;
+
+	5) mcur;
+	   OUTPUT=""														# función de busqueda para el día de hoy
+	   echo -e $bold$ylow"Agenda para el día de HOY"$rset; 
+	   OUTPUT=$(cat ${CALENDAR}|grep -i ${hoy}|cut -c 13-)				# lista el archivo calendario busca la fecha del día.
+	   export OUTPUT;													# Busco por fecha y la corto.
+	   
+	   if [[ $OUTPUT = "" ]]											# Validacion en caso de que la salida dé vacía.
+	   	then
+	   		echo -e "No hay eventos registrados.";
+
+
+	   else
+			IFS="::";													# Defino el separador de registros.
+	   		set $OUTPUT;												# Separo los registros.
+	   		echo $OUTPUT;												# Imprimo en pantalla.
+	   fi;
+	   pausa;									# El día de hoy.
+	   unset $IFS;
+	   2LOG "Agenda de Hoy";;
+
+	6) tar -czvf $CALENDAR.tar.gz *.pcal agenda*.sh agenda*.log;		# Hago un tar.gz de el script 
+	   mcur;
+	   echo -ne "dirección de email: ";									# y lo envío por email. 
+	   read emailadd;
+	   # uuencode $CALENDAR.tar.gz $CALENDAR.tar.gz | mail -s "agenda "$hoy $emailadd;
+	   echo "Enviado desde Agenda"$VERSION | mutt -s "Testing mutt" $emailadd -a $CALENDAR.tar.gz;
+	   valido "envio de email";
+	   echo -e $ylow$bold"Email enviado..."$rset;
+	   pausa;
+	   2LOG "Envío por email del "$CALENDAR;;
+
+	7) rm $CALENDAR.tar.gz 
+	   cp $CALENDAR $CALENDAR.$(date +%Y%m%d);
+	   mcur;
+	   echo -e $subr"\nListado de archivos a Backupear:\n"$rset
+	   tar -czvf $CALENDAR.tar.gz $CALENDAR.* agenda* agenda*;			# Backup en un tar.gz del script, logs y del archivo calendario.
+	   valido backup;
+	   echo "Copiando a la nube...";
+	   scp $CALENDAR.tar.gz guicaste@m-net.arbornet.org:/home/g/u/guicaste/$CALENDAR.tar.gz;	
+           pausa;
+	   2LOG "Backup "$CALENDAR;
+	   2LOG $CALENDAR" is stored in the Cloud";;
+	   
+	8) tar -xvzf $CALENDAR.tar.gz $CALENDAR;					# Restaura el Calendario $CALENDAR
+	   echo "Archivo reastaurado al día "$(ls -l $CALENDAR |awk {'print $6" "$7'});
+       pausa;
+	   2LOG "Restore "$CALENDAR;;
+ 
+	s) cp guille.pcal guille.pcal.local;
+	   echo "Retieving calendar from m-net.arbornet.org ...";
+	   scp guicaste@m-net.arbornet.org:/home/g/u/guicaste/guille.pcal guille.pcal.remote;
+	   echo "The following lines will be added to local calendar ...";
+           diff guille.pcal.local guille.pcal.remote|grep "> "|awk -F "> " '{print $2}';
+           echo "Press [enter] to continue ...";
+           read pp;
+           echo `diff guille.pcal.local guille.pcal.remote|grep "> "|awk -F "> " '{print $2"\n"}'` >> guille.pcal.local;
+           rm guille.pcal;
+           rm guille.pcal.remote;
+           mv guille.pcal.local guille.pcal;
+           echo "Updating calendar in m-net.arbornet.org ...";
+           scp guille.pcal guicaste@m-net.arbornet.org:/home/g/u/guicaste/guille.pcal;
+	   pausa;
+       2LOG "Sync "$CALENDAR" with m-net.arbornet.org.";;
+
+	 esac
+done
+2LOG "Fin de sessión en calendario "$CALENDAR
+echo -e "\033[13;1H"
+exit 0
+#
+#-----------------------------------------------------------------------------------------------------------------
+#
+# H I S T O R Y
+
+# 2012/03/14	Version 1.4
+# 2012/04/25	Version 1.6
+# 2013/03/08	Version 1.7
+#		* Multiple calendar selection
+#		* Backup & Restore options
+#		* Función Verificación errores
+#
+# 2013/03/09	Version 1.8
+#		* Modificación de la función alta. Toma la fecha del día de hoy si apretamos <ENTER>. Sino toma el valor que elegimos.
+#		* Creación de Calendario con encabezado indicando el nombre del mismo y la version de la agenda que lo creó.
+#
+# 2013/04/07	Version 1.9	
+#
+#		* Modificacion de la variable $hoy para que muestre barra de separacion entre día,mes y año.
+# 2013/06/01	Version 2.0
+#		* Se agregó función de log a la agenda.
+#
+# 2013/08/24	Version 2.1
+#		* Corrección metodos de busqueda, indica si no hay eventos para una fecha dada.
+# 2015/02/26	Version 2.2
+#		* Se agregó backup en la nube (scp a m-net.arbornet.org)
+# 2015/06/23	Version 2.3
+#		* Correcion del Backup para que tome el nombre de archivo de la variable $LOG.
+#		* Agregado de campo separador ::
+#		* Listados por fecha y del día de hoy corregidos. Un renglon por registro ingresado.
+# 2015/07/31	* Envío por email usando mutt
+#
+# 2015/09/17	* Corrección menor restore de calendario
+#
+# 2015/11/03	Version 2.32
+#		* Se Agregó la opción de Hora de Inicio y Hora de fin al alta.
+#
+# 2016/07/02	Version 2.4
+#	       * Se agregó la función de sincronizar el calendario con la copia en m-net.arbornet.org
+#
+# 2017/07/25
+#		* Correccion del path en el script para reflejar las modificaciones en el /home de Arbornet.
+# 2019/05/18
+#		* Agregue el almanaque al menu y mejore la interfase  de texto con posicionamiento de  cursores
+# To Dos:
+#
+# -  Como borrar un registro dado y poder dejar el resto de los registros de una fecha dada.
+# -  Proteger con contraseña los archivos
