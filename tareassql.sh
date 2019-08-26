@@ -38,7 +38,7 @@ LOG="agendasql-"$VERSION".log"	# Nombre del log
 	function menu() {
 		clear
 		echo -e "=============================================================================================="
-		echo -e "\t\t\t\t"$subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
+		echo -e "\t\t\t\t"$subr$bold$ylow"Bitácora SQL - Modulo Tareas"$rset"\tversion: "$VERSION
 		echo -e "=============================================================================================="
 		cal
 		echo -ne "\033[4;21H | "
