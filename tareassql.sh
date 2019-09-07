@@ -45,9 +45,9 @@ LOG="tareassql-"$VERSION".log"	# Nombre del log
 		echo -ne "\033[5;21H | "
 		echo -e " 1) Alta\t\t\t4) Busca x fecha fin\t7) Modifica registro"
 		echo -ne "\033[6;21H | "
-		echo -e " 2) Borra tarea\t\t5) Tareas para Hoy"
+		echo -e " 2) Borra tarea\t\t5) Tareas Incompletas"
 		echo -ne "\033[7;21H | "
-		echo -e " 3) Busca x fecha inicio\t6) Backup\t\t9) Salir"
+		echo -e " 3) Tareas de Hoy\t6) Backup\t\t9) Salir"
 		echo -ne "\033[8;21H | "
 		echo -ne "\033[9;21H |  opción: "
 		echo -ne "\033[s" # grabo posision del cursor
@@ -98,27 +98,28 @@ while [ $opcion != "9" ]; do
 	   2LOG "Borrado titulo "$titulo;;
 
 	3) mcur;
-	   echo " > Tareas para el  dia de hoy";
-	   echo -e "	- Tareas que empiezan:\n";
-       mysql agenda -e "SELECT * FROM tareas WHERE fecha_ini like '%"${hoy}"%';";
-       echo -e "\033[41m	- Tareas vencidas:\n";
-       mysql agenda -e "SELECT * FROM tareas WHERE fecha_ini (BETWEEN '2019-01-01' '%"${hoy}"%' AND completada = 'FALSE');"; 
+	   echo " > Tareas para el dia de hoy";
+	   echo -e "\033[31;33;1m	- Tareas vencidas:\n";
+       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE';";
+	   echo -e $rset"	- Tareas que vencen hoy:\n";
+       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE();";
+      
        echo -e $rset;   
        pausa;
        2LOG "Agenda de Hoy";;
 
 	4) mcur;
 	   echo -e " > Busqueda por fecha de fin";
-	   echo -ne "fecha fin: ";read fecha_ini;
+	   echo -ne "fecha fin: ";read fecha_fin;
 	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin like '%"${fecha_fin}"%';";
 	   pausa;
-	   2LOG "Busqueda de tareas por Fecha de Inicio"$fecha_fin;;
+	   2LOG "Busqueda de tareas por Fecha de Fin"$fecha_fin;;
 
 	5) mcur;
-	   echo -e " > Busqueda por fecha de inicio\n";
-	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_ini like '%"${hoy}"%';";
+	   echo -e " > Busqueda Tareas Imcompletas\n";
+	   mysql agenda -e "SELECT * FROM tareas WHERE completada = 'FALSE';";
 	   pausa;
-	   2LOG "Busqueda de tareas por Fecha de Inicio"$fecha_ini;;
+	   2LOG "Busqueda de tareas Incompletas"$fecha_ini;;
 
 	6) mcur;
 	   echo -e " > Backup agendasql";
@@ -133,8 +134,7 @@ while [ $opcion != "9" ]; do
 	   echo -e " > Elija registro a modificar";
 	   echo -ne "id: "; read id;
 	   echo -e " > Elija campo a modificar:\n";
-	   echo -e $rvrs"1"$rset" titulo "$rvrs"2"$rset" prioridad "$rvrs"3"$rset" fecha inicio "$rvrs"4"$rset" fecha fin "$rvrs"5"$rset" hora inicio "$rvrs"6"$rset" hora fin "$rvrs"7"$rset" completada\n";
-	   echo -e $rvrs"8"$rset" notas "$rvrs"9"$rset" cancelar";
+	   echo -e $rvrs"1"$rset" titulo "$rvrs"2"$rset" prioridad "$rvrs"3"$rset" fecha inicio "$rvrs"4"$rset" fecha fin "$rvrs"5"$rset" hora inicio "$rvrs"6"$rset" hora fin "$rvrs"7"$rset" completada "$rvrs"8"$rset" notas "$rvrs"9"$rset" cancelar";
 	   echo -ne "opcion: ";read opcion;
 	   case $opcion in
 		1) echo -ne "nueva titulo: ";read titulo;
