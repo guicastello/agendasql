@@ -118,7 +118,7 @@ while [ $opcion != "9" ]; do
 
 	6) mcur;
 	   echo -e " > Efemerides";
-	   mysql agenda -e "SELECT * FROM calendario WHERE (fecha LIKE '%"${efe}"%' AND todo_dia = TRUE);";
+	   mysql agenda -e "SELECT * FROM calendario WHERE fecha LIKE '%"${efe}"%' AND todo_dia = 'TRUE';";
 	   pausa;
 	   2LOG "Efemerides";;
 
