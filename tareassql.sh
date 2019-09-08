@@ -45,7 +45,7 @@ LOG="tareassql-"$VERSION".log"	# Nombre del log
 		echo -ne "\033[5;21H | "
 		echo -e " 1) Alta\t\t\t4) Busca x fecha fin\t7) Modifica registro"
 		echo -ne "\033[6;21H | "
-		echo -e " 2) Borra tarea\t\t5) Tareas Incompletas"
+		echo -e " 2) Borra tarea\t\t5) Tareas Incompletas\t8) Cierra Tareas"
 		echo -ne "\033[7;21H | "
 		echo -e " 3) Tareas de Hoy\t6) Backup\t\t9) Salir"
 		echo -ne "\033[8;21H | "
@@ -155,7 +155,17 @@ while [ $opcion != "9" ]; do
 		   mysql agenda -e "UPDATE tareas SET Notas = ${notas} WHERE id = ${id};";;
 	   esac
 	   mysql agenda -e "SELECT * FROM tareas WHERE id  = '$id' ;"
+	   2LOG "Modificacion registro de Tareas"
        pausa;;
+	   
+	 8) mcur;
+	    echo -e " > Cierre de Tareas\n";
+	    mysql agenda -e "SELECT * FROM tareas WHERE completada = 'FALSE';";
+	    echo -ne "Ingrese Id de la tarea a completar: "; read id;
+		mysql agenda -e "UPDATE tareas SET completada = "TRUE" WHERE id = ${id};";
+		mysql agenda -e "SELECT * FROM tareas WHERE id = ${id};";
+	    2LOG "Cierre de tareas"$fecha_ini;
+	    pausa;;
   esac
 done
 2LOG "Fin de sessión "$(whoami)" en tareassql "
