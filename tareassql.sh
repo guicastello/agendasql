@@ -12,6 +12,7 @@ hoy="$(date +%Y-%m-%d)"				# obtengo la fecha del día de hoy (YYYY/MM/DD)
 efe="$(date +-%m-%d)"				# fecha dia/mes para efemerides
 VERSION="V1.0"					# Version
 LOG="tareassql-"$VERSION".log"			# Nombre del log 
+backup="~/agendasql/backup"			# PATH al backup
 
 ### Definicion de Funciones ###
 #

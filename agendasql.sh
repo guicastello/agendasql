@@ -12,7 +12,7 @@ hoy="$(date +%Y-%m-%d)"				# obtengo la fecha del día de hoy (YYYY/MM/DD)
 efe="$(date +-%m-%d)"				# fecha dia/mes para efemerides
 VERSION="V1.0"					# Version
 LOG="agendasql-"$VERSION".log"			# Nombre del log 
-
+backup="~/agendasql/backup"			# PATH al backup
 ### Definicion de Funciones ###
 #
 # Función mcur posiciona el cursor fuera del menu para manener prolijo el loop
@@ -124,7 +124,7 @@ while [ $opcion != "9" ]; do
 
 	7) mcur;
 	   echo -e " > Backup agendasql";
-	   mysqldump agenda > ~/agendasql/backups/agenda_`date +%Y-%m-%d_%H%M`.sql;
+	   mysqldump agenda > ${backup}/agenda_`date +%Y-%m-%d_%H%M`.sql;
 	   echo -e $bold"Backup OK"$rset;
 	   pausa;
 	   2LOG "Back up agenda";;
