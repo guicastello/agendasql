@@ -80,7 +80,7 @@ while [ $opcion != "9" ]; do
 	   echo -ne "hora fin: "; read hfin;
 	   echo -ne "todo el dia: "; read tld;
 	   echo -ne "Descripcion: "; read desc;
-	   mysql agenda -e "insert into agenda.calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('${fecha}', '${hini}', '${hfin}', '${tld}', '${desc}');";
+	   mysql agenda -e "insert into agenda.calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('${fecha}','${hini}', '${hfin}', ${tld}, '${desc}');";
        pausa;
        2LOG "Alta de registro.";;
 
@@ -118,7 +118,7 @@ while [ $opcion != "9" ]; do
 
 	6) mcur;
 	   echo -e " > Efemerides";
-	   mysql agenda -e "SELECT * FROM calendario WHERE fecha LIKE '%"${efe}"%' AND todo_dia = 'TRUE';";
+	   mysql agenda -e "SELECT * FROM calendario WHERE (fecha LIKE '%"${efe}"%' AND todo_dia = TRUE);";
 	   pausa;
 	   2LOG "Efemerides";;
 
