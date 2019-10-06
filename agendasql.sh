@@ -1,18 +1,18 @@
 ﻿#!/bin/bash
 
 ### Definicion de Variables ###
-opcion=0						# se usa para elegir qué tarea se va a realizar
+opcion=0					# se usa para elegir qué tarea se va a realizar
 bold="\033[1m"					# Pone los atributos del texto en "Bold".
 rset="\033[0m"					# Desactiva los Atributos del texto.
 rvrs="\033[7m"					# Invierte el texto
 ylow="\033[33m"					# Letras en Amarillo
 fdoa="\033[44m"					# Letras en Blancas con fondo azul.
 subr="\033[4m"					# Letras subrayadas
-hoy="$(date +%Y-%m-%d)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
-efe="$(date +%m-%d)"			# fecha dia/mes para efemerides
+hoy="$(date +%Y-%m-%d)"				# obtengo la fecha del día de hoy (YYYY/MM/DD)
+efe="$(date +-%m-%d)"				# fecha dia/mes para efemerides
 VERSION="V1.0"					# Version
-LOG="agendasql-"$VERSION".log"	# Nombre del log 
-
+LOG="agendasql-"$VERSION".log"			# Nombre del log 
+backup="~/agendasql/backup"			# PATH al backup
 ### Definicion de Funciones ###
 #
 # Función mcur posiciona el cursor fuera del menu para manener prolijo el loop
@@ -124,7 +124,7 @@ while [ $opcion != "9" ]; do
 
 	7) mcur;
 	   echo -e " > Backup agendasql";
-	   mysqldump agenda > ~/agendasql/backups/agenda_`date +%Y-%m-%d_%H%M`.sql;
+	   mysqldump agenda > ${backup}/agenda_`date +%Y-%m-%d_%H%M`.sql;
 	   echo -e $bold"Backup OK"$rset;
 	   pausa;
 	   2LOG "Back up agenda";;

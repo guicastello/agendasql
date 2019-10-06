@@ -9,7 +9,7 @@ ylow="\033[33m"					# Letras en Amarillo
 fdoa="\033[44m"					# Letras en Blancas con fondo azul.
 subr="\033[4m"					# Letras subrayadas
 hoy="$(date +%Y-%m-%d)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
-efe="$(date +%m-%d)"			# fecha dia/mes para efemerides
+efe="$(date +-%m-%d)"			# fecha dia/mes para efemerides
 VERSION="V1.0"					# Version
 #LOG="agendasql-"$VERSION".log"	# Nombre del log 
 

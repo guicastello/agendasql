@@ -284,6 +284,7 @@
 2019-09-08_02:04: Borrado fecha 2013-09-08
 2019-09-08_02:04: Back up agenda
 2019-09-08_02:04: Fin de sessión guillermo en agendasql
+<<<<<<< HEAD
 2019-09-11_20:31: Inicio Log agendasql por el usuario guillermo
 2019-09-11_20:33: Alta de registro.
 2019-09-11_20:34: Alta de registro.
@@ -343,3 +344,24 @@
 2019-09-18_00:33: Alta de registro.
 2019-09-18_00:34: Borrado fecha 1212-12-12
 2019-09-18_00:34: Fin de sessión guillermo en agendasql
+=======
+2019-09-14_04:08: Inicio Log agendasql por el usuario ubuntu
+2019-09-14_04:09: Alta de registro.
+2019-09-14_04:10: Alta de registro.
+2019-09-14_04:10: Back up agenda
+2019-09-14_04:10: Fin de sessión ubuntu en agendasql
+2019-09-14_22:27: Inicio Log agendasql por el usuario ubuntu
+2019-09-14_22:27: Busqueda Fecha 09-15
+2019-09-14_22:28: Borrado fecha 09-15
+2019-09-14_22:28: Busqueda Fecha -04-
+2019-09-14_22:29: Busqueda Fecha -16
+2019-09-14_22:30: Busqueda Fecha 2012-
+2019-09-14_22:30: Fin de sessión ubuntu en agendasql
+>>>>>>> 3f2a134c4fc14908cad772531de3a7daa649ea31
+2019-09-18_19:19: Inicio Log agendasql por el usuario guillermo
+2019-09-18_19:19: Fin de sessión guillermo en agendasql
+2019-09-18_19:19: Inicio Log agendasql por el usuario guillermo
+2019-09-18_19:19: Alta de registro.
+2019-09-18_19:19: Busqueda Fecha 2121
+2019-09-18_19:20: Borrado fecha 2121
+2019-09-18_19:20: Fin de sessión guillermo en agendasql
