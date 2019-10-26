@@ -124,7 +124,7 @@ while [ $opcion != "9" ]; do
 
 	7) mcur;
 	   echo -e " > Backup agendasql";
-	   mysqldump agenda > ${backup}/agenda_`date +%Y-%m-%d_%H%M`.sql;
+	   mysqldump agenda > "backups/agenda_"`date +%Y-%m-%d_%H%M`".sql";
 	   echo -e $bold"Backup OK"$rset;
 	   pausa;
 	   2LOG "Back up agenda";;
