@@ -1,18 +1,20 @@
 ﻿#!/bin/bash
 
 ### Definicion de Variables ###
-opcion=0					# se usa para elegir qué tarea se va a realizar
-bold="\033[1m"					# Pone los atributos del texto en "Bold".
-rset="\033[0m"					# Desactiva los Atributos del texto.
-rvrs="\033[7m"					# Invierte el texto
-ylow="\033[33m"					# Letras en Amarillo
-fdoa="\033[44m"					# Letras en Blancas con fondo azul.
-subr="\033[4m"					# Letras subrayadas
-hoy="$(date +%Y-%m-%d)"				# obtengo la fecha del día de hoy (YYYY/MM/DD)
-efe="$(date +-%m-%d)"				# fecha dia/mes para efemerides
-VERSION="V1.0"					# Version
-LOG="agendasql-"$VERSION".log"			# Nombre del log 
-backup="~/agendasql/backup"			# PATH al backup
+opcion=0				# se usa para elegir qué tarea se va a realizar
+bold="\033[1m"				# Pone los atributos del texto en "Bold".
+rset="\033[0m"				# Desactiva los Atributos del texto.
+rvrs="\033[7m"				# Invierte el texto
+ylow="\033[33m"				# Letras en Amarillo
+lred="\033[31m"				# Letras en rojo
+fdoa="\033[44m"				# Letras en Blancas con fondo azul.
+subr="\033[4m"				# Letras subrayadas
+hoy="$(date +%Y-%m-%d)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
+efe="$(date +-%m-%d)"			# fecha dia/mes para efemerides
+VERSION="V1.0"				# Version
+LOG="agendasql-"$VERSION".log"		# Nombre del log 
+backup="~/agendasql/backup"		# PATH al backup
+
 ### Definicion de Funciones ###
 #
 # Función mcur posiciona el cursor fuera del menu para manener prolijo el loop
@@ -37,9 +39,9 @@ backup="~/agendasql/backup"			# PATH al backup
 ### Función menú muestra el menú ###
 	function menu() {
 		clear
-		echo -e "=============================================================================================="
-		echo -e "\t\t\t\t"$subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
-		echo -e "=============================================================================================="
+		echo -e "========================================================================="
+		echo -e  $subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
+		echo -e "========================================================================="
 		cal
 		echo -ne "\033[4;21H | "
 		echo -ne "\033[5;21H | "
@@ -49,10 +51,11 @@ backup="~/agendasql/backup"			# PATH al backup
 		echo -ne "\033[7;21H | "
 		echo -e " 3) Borra x Descripcion\t6) Efemerides\t\t9) Salir"
 		echo -ne "\033[8;21H | "
+		echo -e " a) Proximos Eventos"
 		echo -ne "\033[9;21H |  opción: "
 		echo -ne "\033[s" # grabo posision del cursor
 		echo -ne "\033[10;21H | ";
-		echo -ne "\033[11;1H=============================================================================================="
+		echo -ne "\033[11;1H============================================================================="
 		echo -ne "\033[u" # restauro posicion del cursor
 	}
 
@@ -150,7 +153,13 @@ while [ $opcion != "9" ]; do
 		   mysql agenda -e "UPDATE calendario SET descripcion = ${descripcion} WHERE id = ${id};";;
 	   esac
 	   mysql agenda -e "SELECT * FROM calendario WHERE id  = '$id' ;"
-       pausa;;
+       pausa;
+	   2LOG "Modificacion de registro";;
+	a) mcur;
+	   # echo -ne "fecha: ";read fecha;
+	   mysql agenda -e "SELECT fecha, hora_ini, hora_fin, todo_dia, descripcion FROM calendario WHERE fecha >CURDATE(); ;";
+	   pausa;
+	   2LOG "Proximos eventos";;
   esac
 done
 2LOG "Fin de sessión "$(whoami)" en agendasql "

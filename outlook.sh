@@ -6,6 +6,7 @@ bold="\033[1m"					# Pone los atributos del texto en "Bold".
 rset="\033[0m"					# Desactiva los Atributos del texto.
 rvrs="\033[7m"					# Invierte el texto
 ylow="\033[33m"					# Letras en Amarillo
+lred="\033[1;31m"					# Letras en rojo
 fdoa="\033[44m"					# Letras en Blancas con fondo azul.
 subr="\033[4m"					# Letras subrayadas
 hoy="$(date +%Y-%m-%d)"			# obtengo la fecha del día de hoy (YYYY/MM/DD)
@@ -40,13 +41,15 @@ VERSION="V1.0"					# Version
 	echo -e "\t\t\t\t\t"$subr$bold$ylow"Bitácora SQL - Que hay para hoy"$rset"\tversion: "$VERSION
 	echo -e "================================================================================================================================="
        mysql -e "use agenda;"
-	   echo -e " > Agenda para el  dia de hoy";
+	   echo -e " > Agenda para el  dia de hoy:";
        mysql agenda -e "SELECT * FROM calendario WHERE fecha = CURDATE();";
-	   echo -e "\n > Efemerides"$fdoa;
+	   echo -e " > Proximos Eventos:";
+	   mysql agenda -e "SELECT * FROM calendario WHERE fecha >'$hoy' ;";
+	   echo -e " > Efemerides:"
 	   mysql agenda -e "SELECT fecha, descripcion FROM calendario WHERE fecha LIKE '%"${efe}"%' AND todo_dia = 'TRUE';";
-	   echo -e "\n\033[31;33;1m	> Tareas vencidas:\n";
+	   echo -e $lred" > Tareas vencidas:";
        mysql agenda -e "SELECT fecha_fin, prioridad, titulo, Notas FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE';";
-	   echo -e $rset" > Tareas que vencen hoy:\n";
-mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE();";
-pausa;
+	   echo -e $rset" > Tareas que vencen hoy:";
+	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE();";
+	   pausa;
 exit 0
