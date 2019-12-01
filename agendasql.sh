@@ -32,7 +32,7 @@ backup="~/agendasql/backup"		# PATH al backup
 	}
 ### Funcion Escribe Log ###
 	function 2LOG() {
-		echo $(date +%Y-%m-%d_%H:%M)": "$1 >> $LOG
+		echo $(date +%Y-%m-%d_%H:%M)": "$1 >> $LOG;
 }
 
 
@@ -40,7 +40,7 @@ backup="~/agendasql/backup"		# PATH al backup
 	function menu() {
 		clear
 		echo -e "========================================================================="
-		echo -e  $subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
+		echo -e $subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
 		echo -e "========================================================================="
 		cal
 		echo -ne "\033[4;21H | "
@@ -83,7 +83,7 @@ while [ $opcion != "9" ]; do
 	   echo -ne "hora fin: "; read hfin;
 	   echo -ne "todo el dia: "; read tld;
 	   echo -ne "Descripcion: "; read desc;
-	   mysql agenda -e "insert into agenda.calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('${fecha}','${hini}', '${hfin}', ${tld}, '${desc}');";
+	   mysql agenda -e "insert into calendario (fecha, hora_ini, hora_fin, todo_dia, descripcion) values ('${fecha}','${hini}', '${hfin}', '${tld}', '${desc}');";
        pausa;
        2LOG "Alta de registro.";;
 
@@ -156,8 +156,7 @@ while [ $opcion != "9" ]; do
        pausa;
 	   2LOG "Modificacion de registro";;
 	a) mcur;
-	   # echo -ne "fecha: ";read fecha;
-	   mysql agenda -e "SELECT fecha, hora_ini, hora_fin, todo_dia, descripcion FROM calendario WHERE fecha >CURDATE(); ;";
+	   mysql agenda -e "SELECT fecha, hora_ini, hora_fin, todo_dia, descripcion FROM calendario WHERE fecha > CURDATE() ;";
 	   pausa;
 	   2LOG "Proximos eventos";;
   esac
