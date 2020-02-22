@@ -39,9 +39,9 @@ backup="~/agendasql/backup"		# PATH al backup
 ### Función menú muestra el menú ###
 	function menu() {
 		clear
-		echo -e "========================================================================="
+		echo -e "=============================================================================================="
 		echo -e $subr$bold$ylow"Bitácora SQL - Modulo Agenda"$rset"\tversion: "$VERSION
-		echo -e "========================================================================="
+		echo -e "=============================================================================================="
 		cal
 		echo -ne "\033[4;21H | "
 		echo -ne "\033[5;21H | "
@@ -55,7 +55,7 @@ backup="~/agendasql/backup"		# PATH al backup
 		echo -ne "\033[9;21H |  opción: "
 		echo -ne "\033[s" # grabo posision del cursor
 		echo -ne "\033[10;21H | ";
-		echo -ne "\033[11;1H============================================================================="
+		echo -ne "\033[11;1H=============================================================================================="
 		echo -ne "\033[u" # restauro posicion del cursor
 	}
 
@@ -90,17 +90,17 @@ while [ $opcion != "9" ]; do
 	2) mcur;
 	   echo -e " > Borrar registro por fecha";
 	   echo -ne "Fecha: ";read fecha;
-	   mysql agenda -e "select * from calendario where fecha like '%"${fecha}"%';";
+	   mysql agenda -e "SELECT * FROM calendario WHERE fecha LIKE '%"${fecha}"%' ORDER BY FECHA ASC;";
            echo -ne "Ingrese Id a Borrar: "; read id;
            mysql agenda -e "DELETE FROM calendario WHERE  id = "${id}";";
-           mysql agenda -e "select * from calendario WHERE fecha like '%"${fecha}"%';";
+           mysql agenda -e "select * from calendario WHERE fecha like '%"${fecha}"%' ORDER BY FECHA ASC;";
 	   pausa;
 	   2LOG "Borrado fecha "$fecha;;
 
 	3) mcur;
 	   echo -e " > Borrar registro por descripcion";
 	   echo -ne "Descripcion: ";read descripcion;
-	   mysql agenda -e "SELECT * FROM calendario WHERE description LIKE '%"${descripcion}"%';";
+	   mysql agenda -e "SELECT * FROM calendario WHERE description LIKE '%"${descripcion}"%' ORDER BY FECHA ASC;";
 	   echo -e "Ingrese Id a Borrar> "; read id;
            mysql agenda -e "DELETE FROM calendario WHERE id = "${id}";";
 	   pausa;
@@ -109,19 +109,19 @@ while [ $opcion != "9" ]; do
 	4) mcur;
 	   echo -e " > Busqueda por fecha";
 	   echo -ne "fecha: ";read fecha;
-	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%';";
+	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%' ORDER BY FECHA ASC;";
 	   pausa;
 	   2LOG "Busqueda Fecha "$fecha;;
 
 	5) mcur;
 	   echo " > Agenda para el  dia de hoy";
-           mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${hoy}"%';";
+           mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${hoy}"%' ORDER BY FECHA ASC;";
            pausa;
            2LOG "Agenda de Hoy";;
 
 	6) mcur;
 	   echo -e " > Efemerides";
-	   mysql agenda -e "SELECT * FROM calendario WHERE (fecha LIKE '%"${efe}"%' AND todo_dia = TRUE);";
+	   mysql agenda -e "SELECT * FROM calendario WHERE (fecha LIKE '%"${efe}"%' AND todo_dia = TRUE) ORDER BY FECHA ASC;";
 	   pausa;
 	   2LOG "Efemerides";;
 
@@ -134,7 +134,7 @@ while [ $opcion != "9" ]; do
 
 	8) mcur;
 	   echo -ne "fecha: ";read fecha;
-	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%';";
+	   mysql agenda -e "SELECT * FROM calendario WHERE fecha like '%"${fecha}"%' ORDER BY FECHA ASC;";
 	   echo -e " > Elija registro a modificar";
 	   echo -ne "id: "; read id;
 	   echo -e " > Elija campo a modificar:\n";
@@ -156,7 +156,7 @@ while [ $opcion != "9" ]; do
        pausa;
 	   2LOG "Modificacion de registro";;
 	a) mcur;
-	   mysql agenda -e "SELECT fecha, hora_ini, hora_fin, todo_dia, descripcion FROM calendario WHERE fecha > CURDATE() ;";
+	   mysql agenda -e "SELECT fecha, hora_ini, hora_fin, todo_dia, descripcion FROM calendario WHERE fecha > CURDATE() ORDER BY FECHA ASC;";
 	   pausa;
 	   2LOG "Proximos eventos";;
   esac

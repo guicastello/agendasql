@@ -37,19 +37,19 @@ VERSION="V1.0"					# Version
 
 ### Función menú muestra el menú ###
 	clear
-	echo -e "================================================================================================================================="
-	echo -e "\t\t\t\t\t"$subr$bold$ylow"Bitácora SQL - Que hay para hoy"$rset"\tversion: "$VERSION
-	echo -e "================================================================================================================================="
+	echo -e "======================================================================"
+	echo -e $subr$bold$ylow"Bitácora SQL - Que hay para hoy"$rset"\tversion: "$VERSION
+	echo -e "======================================================================="
        mysql -e "use agenda;"
 	   echo -e " > Agenda para el  dia de hoy:";
        mysql agenda -e "SELECT * FROM calendario WHERE fecha = CURDATE();";
 	   echo -e " > Proximos Eventos:";
-	   mysql agenda -e "SELECT * FROM calendario WHERE fecha >'$hoy' ;";
+	   mysql agenda -e "SELECT fecha, hora_ini , hora_fin , todo_dia , descripcion FROM calendario WHERE fecha > CURDATE() ORDER BY fecha ASC;";
 	   echo -e " > Efemerides:"
-	   mysql agenda -e "SELECT fecha, descripcion FROM calendario WHERE fecha LIKE '%"${efe}"%' AND todo_dia = 'TRUE';";
+	   mysql agenda -e "SELECT fecha, descripcion FROM calendario WHERE fecha LIKE '%"${efe}"%' AND todo_dia = 'TRUE' ORDER BY fecha ASC";
 	   echo -e $lred" > Tareas vencidas:";
-       mysql agenda -e "SELECT fecha_fin, prioridad, titulo, Notas FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE';";
+       mysql agenda -e "SELECT fecha_fin, prioridad, titulo, Notas FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE' ORDER BY fecha_fin ASC;";
 	   echo -e $rset" > Tareas que vencen hoy:";
-	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE();";
+	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE() ORDER BY fecha_fin ASC;";
 	   pausa;
 exit 0

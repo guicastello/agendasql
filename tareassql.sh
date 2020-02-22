@@ -94,16 +94,16 @@ while [ $opcion != "9" ]; do
 	   mysql agenda -e "select * from tareas where fecha like '%"${titulo}"%';";
            echo -ne "Ingrese Id a Borrar: "; read id;
            mysql agenda -e "DELETE FROM tareas WHERE  id = "${id}";";
-           mysql agenda -e "select * from tareas WHERE fecha like '%"${titulo}"%';";
+           mysql agenda -e "select * from tareas WHERE fecha like '%"${titulo}"%' ORDER BY fecha ASC;";
 	   pausa;
 	   2LOG "Borrado titulo "$titulo;;
 
 	3) mcur;
 	   echo " > Tareas para el dia de hoy";
 	   echo -e "\033[31;33;1m	- Tareas vencidas:\n";
-       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE';";
+       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin < CURDATE() AND completada = 'FALSE' ORDER BY fecha_fin ASC;";
 	   echo -e $rset"	- Tareas que vencen hoy:\n";
-       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE();";
+       mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin = CURDATE() ORDER BY fecha_fin ASC;";
       
        echo -e $rset;   
        pausa;
@@ -112,8 +112,8 @@ while [ $opcion != "9" ]; do
 	4) mcur;
 	   echo -e " > Busqueda por fecha de fin";
 	   echo -ne "fecha fin: ";read fecha_fin;
-	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin like '%"${fecha_fin}"%';";
-	   pausa;
+	   mysql agenda -e "SELECT * FROM tareas WHERE fecha_fin like '%"${fecha_fin}"%' ORDER BY fecha_fin ASC;";
+	   pausa; 
 	   2LOG "Busqueda de tareas por Fecha de Fin"$fecha_fin;;
 
 	5) mcur;
