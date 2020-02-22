@@ -1,0 +1,164 @@
+- Reset mysql root password
+
+	sudo mysql --user=root mysql
+
+	MariaDB [mysql]> update user set Password=PASSWORD('kkck1234') where user='root';
+	MariaDB [mysql]> flush privileges;
+	MariaDB [mysql]> exit;
+
+
+- Crear Base:
+
+	MariaDB [mysql]> create database bookalone;
+
+- Crear usuario:
+
+	MariaDB [mysql]> create user 'guillermo'@'%' identified by 'Jajat3jod1!';
+
+- Otorgar Privilegios:
+
+	MariaDB [mysql]> grant all privileges on bookalone.* to 'guillermo'@'localhost';
+
+- Aplicar Cambios:
+
+	MariaDB [mysql]> FLUSH PRIVILEGES;
+
+- Borrar usuario:
+
+	MariaDB []> ;
+
+- Conectarse a una database
+	mysql -uguillermo -hlocalhost bookalone -p
+
+- 
+#########################################
+#		BOOKALONE		#
+#########################################
+
+MariaDB [bookalone]> show tables;
++---------------------+
+| Tables_in_bookalone |
++---------------------+
+| biblioteca          |
++---------------------+
+
+MariaDB [bookalone]> create table biblioteca 
+(
+id int(8) not null auto_increment,
+nombre varchar(60) NOT NULL,
+autor varchar(60) NOT NULL,
+isbn  varchar(20) NOT NULL,
+serie  varchar(20) NULL,
+editorial varchar(20) NULL,
+PRIMARY KEY (id)
+);
+
+MariaDB [bookalone]> describe biblioteca;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| id        | int(8)      | NO   | PRI | NULL    | auto_increment |
+| nombre    | varchar(60) | NO   |     | NULL    |                |
+| autor     | varchar(60) | NO   |     | NULL    |                |
+| isbn      | varchar(20) | NO   |     | NULL    |                |
+| serie     | varchar(20) | YES  |     | NULL    |                |
+| editorial | varchar(20) | YES  |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+
+MariaDB [bookalone]> insert into biblioteca (nombre , autor , isbn ) values ('Starship Troopers','Robert A. Heinlein','1234');
+Query OK, 1 row affected (0.02 sec)
+
+MariaDB [bookalone]> select * from biblioteca;
++----+-------------------+--------------------+------+-------+-----------+
+| id | nombre            | autor              | isbn | serie | editorial |
++----+-------------------+--------------------+------+-------+-----------+
+|  1 | Starship Troopers | Robert A. Heinlein | 1234 | NULL  | NULL      |
++----+-------------------+--------------------+------+-------+-----------+
+1 row in set (0.00 sec)
+
+MariaDB [bookalone]> alter table biblioteca add cover varchar(80) after editorial;
+
+MariaDB [bookalone]> ALTER TABLE table_name CHANGE COLUMN old-name new-name
+
+  MODIFY column_name column_definition
+    [ FIRST | AFTER column_name ];
+
+
+MariaDB [mysql]> delete from agenda.calendario where id = 12;
+
+MariaDB [bookalone]> update biblioteca set editorial = 'Bruguera' where id = 1;
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [bookalone]> select * from biblioteca;
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+| id | nombre            | autor              | isbn | serie | editorial | cover                                                                         |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+|  1 | Starship Troopers | Robert A. Heinlein | 1234 | NULL  | Bruguera  | /home/guillermo/Calibre/Robert A. Heinlein/Starship troopers (1153)/cover.jpg |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+
+MariaDB [bookalone]> select * from biblioteca where autor = "Rand";
+Empty set (0.01 sec)
+
+MariaDB [bookalone]> select * from biblioteca where autor = "Ayn Rand";
++----+----------------------+----------+------+-------+-----------+-------+
+| id | nombre               | autor    | isbn | serie | editorial | cover |
++----+----------------------+----------+------+-------+-----------+-------+
+|  2 | La Rebelion de Atlas | Ayn Rand | 1234 | NULL  | NULL      | NULL  |
++----+----------------------+----------+------+-------+-----------+-------+
+1 row in set (0.00 sec)
+
+MariaDB [bookalone]> select * from biblioteca where autor = "Robert A. Heinlein";
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+| id | nombre            | autor              | isbn | serie | editorial | cover                                                                         |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+|  1 | Starship Troopers | Robert A. Heinlein | 1234 | NULL  | Bruguera  | /home/guillermo/Calibre/Robert A. Heinlein/Starship troopers (1153)/cover.jpg |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+MariaDB [bookalone]> select * from biblioteca;
++----+----------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+| id | nombre               | autor              | isbn | serie | editorial | cover                                                                         |
++----+----------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+|  1 | Starship Troopers    | Robert A. Heinlein | 1234 | NULL  | Bruguera  | /home/guillermo/Calibre/Robert A. Heinlein/Starship troopers (1153)/cover.jpg |
+|  2 | La Rebelion de Atlas | Ayn Rand           | 1234 | NULL  | NULL      | NULL                                                                          |
+|  3 | Samurai              | Saburo Sakai       | 1234 | NULL  | NULL      | NULL                                                                          |
++----+----------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+3 rows in set (0.00 sec)
+
+MariaDB [bookalone]> select * from biblioteca where autor like  "%Heinlein%";
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+| id | nombre            | autor              | isbn | serie | editorial | cover                                                                         |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+|  1 | Starship Troopers | Robert A. Heinlein | 1234 | NULL  | Bruguera  | /home/guillermo/Calibre/Robert A. Heinlein/Starship troopers (1153)/cover.jpg |
++----+-------------------+--------------------+------+-------+-----------+-------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+MariaDB [bookalone]> select * from biblioteca where autor like  "Ayn%";
++----+----------------------+----------+------+-------+-----------+-------+
+| id | nombre               | autor    | isbn | serie | editorial | cover |
++----+----------------------+----------+------+-------+-----------+-------+
+|  2 | La Rebelion de Atlas | Ayn Rand | 1234 | NULL  | NULL      | NULL  |
++----+----------------------+----------+------+-------+-----------+-------+
+1 row in set (0.00 sec)
+
+MariaDB [bookalone]> select * from biblioteca where autor like  "%Saka%";
++----+---------+--------------+------+-------+-----------+-------+
+| id | nombre  | autor        | isbn | serie | editorial | cover |
++----+---------+--------------+------+-------+-----------+-------+
+|  3 | Samurai | Saburo Sakai | 1234 | NULL  | NULL      | NULL  |
++----+---------+--------------+------+-------+-----------+-------+
+1 row in set (0.00 sec)
+
+
+Borrar Registro
+
+	MariaDB [mysql]> delete from agenda.calendario where id = 12;
+
+
+ - Ejecutar una query desde la CLI:
+
+	mysql agenda -e "SELECT * FROM agenda.calendario WHERE fecha like '%"${fecha}"%';"
+
