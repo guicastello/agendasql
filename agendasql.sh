@@ -142,15 +142,15 @@ while [ $opcion != "9" ]; do
 	   echo -ne "opcion: ";read opcion;
 	   case $opcion in
 		1) echo -ne "nueva fecha: ";read fecha
-		   mysql agenda -e "UPDATE calendario SET fecha = ${fecha} WHERE id = ${id} ;";;
+		   mysql agenda -e "UPDATE calendario SET fecha = "${fecha}" WHERE id ="${id}" ;";;
 		2) echo -ne "nueva hora inicio: "; read hora_ini;
-		   mysql agenda -e "UPDATE calendario SET hora_ini = ${hora_ini} WHERE id = ${id};";;
+		   mysql agenda -e "UPDATE calendario SET hora_ini = "${hora_ini}" WHERE id = "${id}";";;
 		3) echo -ne "nueva hora fin: "; read hora_fin;
-		   mysql agenda -e "UPDATE calendario SET hora_fin = ${hora_fin} WHERE id = ${id};";;
+		   mysql agenda -e "UPDATE calendario SET hora_fin = "${hora_fin}" WHERE id = "${id}";";;
 		4) echo -ne "nueva todo_dia: "; read todo_dia;
-		   mysql agenda -e "UPDATE calendario SET todo_dia = ${todo_dia} WHERE id = ${id};";;
+		   mysql agenda -e "UPDATE calendario SET todo_dia = "${todo_dia}" WHERE id = "${id}";";;
 		5) echo -ne "nueva descripcion: "; read descripcion;
-		   mysql agenda -e "UPDATE calendario SET descripcion = ${descripcion} WHERE id = ${id};";;
+		   mysql agenda -e "UPDATE calendario SET descripcion = "${descripcion}" WHERE id = "${id}";";;
 	   esac
 	   mysql agenda -e "SELECT * FROM calendario WHERE id  = '$id' ;"
        pausa;
@@ -161,7 +161,7 @@ while [ $opcion != "9" ]; do
 	   2LOG "Proximos eventos";;
   esac
 done
-2LOG "Fin de sessión "$(whoami)" en agendasql "
+2LOG "Fin de session "$(whoami)" en agendasql "
 echo -e "\033[13;1H"
 #
 #-----------------------------------------------------------------------------------------------------------------
