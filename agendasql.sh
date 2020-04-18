@@ -100,9 +100,9 @@ while [ $opcion != "9" ]; do
 	3) mcur;
 	   echo -e " > Borrar registro por descripcion";
 	   echo -ne "Descripcion: ";read descripcion;
-	   mysql agenda -e "SELECT * FROM calendario WHERE description LIKE '%"${descripcion}"%' ORDER BY FECHA ASC;";
+	   mysql agenda -e "SELECT * FROM calendario WHERE descripcion LIKE '%''${descripcion}''%' ORDER BY FECHA ASC;";
 	   echo -e "Ingrese Id a Borrar> "; read id;
-           mysql agenda -e "DELETE FROM calendario WHERE id = "${id}";";
+           mysql agenda -e "DELETE FROM calendario WHERE id = '"${id}"';";
 	   pausa;
 	   2LOG "Borrado descripcion"$CALENDAR;;
 
@@ -150,7 +150,8 @@ while [ $opcion != "9" ]; do
 		4) echo -ne "nueva todo_dia: "; read todo_dia;
 		   mysql agenda -e "UPDATE calendario SET todo_dia = "${todo_dia}" WHERE id = "${id}";";;
 		5) echo -ne "nueva descripcion: "; read descripcion;
-		   mysql agenda -e "UPDATE calendario SET descripcion = "${descripcion}" WHERE id = "${id}";";;
+		   # echo ${descripcion};
+		   mysql agenda -e "UPDATE calendario SET descripcion = '${descripcion}' WHERE id = "${id}";";;
 	   esac
 	   mysql agenda -e "SELECT * FROM calendario WHERE id  = '$id' ;"
        pausa;
@@ -171,4 +172,6 @@ echo -e "\033[13;1H"
 # 2019/08/24	Version 1.0
 #		* Puesta en marcha del modulo integrado
 #
+
+
 exit 0
